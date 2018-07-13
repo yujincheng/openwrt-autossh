@@ -9,9 +9,12 @@
 START=99
 
 start_instance() {
+
+export HOME=/root
+
 	config_get_bool enabled "$1" 'enabled'
 	config_get localport "$1" 'localport'
-	config_get localaddr "$1" 'localport'
+	config_get localaddr "$1" 'localaddr'
 	config_get remoteport "$1" 'remoteport'
 	config_get ssh "$1" 'ssh'
 	config_get AUTOSSH_PORT "$1" 'monitorport'
@@ -22,16 +25,18 @@ start_instance() {
 	config_get AUTOSSH_GATETIME "$1" 'gatetime'
 	config_get AUTOSSH_DEBUG "$1" 'debug'
 
-echo $AUTOSSH_PORT  && export AUTOSSH_PORT
-echo $AUTOSSH_PIDFILE  && export AUTOSSH_PIDFILE
-echo $AUTOSSH_POLL  && export AUTOSSH_POLL
-echo $AUTOSSH_FIRST_POLL  && export AUTOSSH_FIRST_POLL 
-echo $AUTOSSH_GATETIME  && export AUTOSSH_GATETIME
-echo $AUTOSSH_DEBUG  && export AUTOSSH_DEBUG
+echo $AUTOSSH_PORT > /dev/ttyS0 && export AUTOSSH_PORT
+echo $AUTOSSH_PIDFILE > /dev/ttyS0 && export AUTOSSH_PIDFILE
+echo $AUTOSSH_LOGFILE > /dev/ttyS0 && export AUTOSSH_LOGFILE
+echo $AUTOSSH_POLL > /dev/ttyS0 && export AUTOSSH_POLL
+echo $AUTOSSH_FIRST_POLL > /dev/ttyS0 && export AUTOSSH_FIRST_POLL 
+echo $AUTOSSH_GATETIME > /dev/ttyS0 && export AUTOSSH_GATETIME
+echo $AUTOSSH_DEBUG > /dev/ttyS0 && export AUTOSSH_DEBUG
 
-if [ ! -f $AUTOSSH_LOGFILE ]; then
-	sleep 20	
-fi
+
+#if [ ! -f $AUTOSSH_LOGFILE ]; then
+#	sleep 20	
+#fi
 
 if [ "$enabled" = 1 ]; then
        	echo $AUTOSSH_PIDFILE
@@ -58,7 +63,6 @@ stop() {
 }
 
 boot() {
-	sleep 120
+	sleep 20
 	start
-	return
 }
