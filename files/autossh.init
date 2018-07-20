@@ -16,6 +16,7 @@ export HOME=/root
 	config_get localport "$1" 'localport'
 	config_get localaddr "$1" 'localaddr'
 	config_get remoteport "$1" 'remoteport'
+	config_get remoteport_maintain "$1" 'remoteport_maintain'
 	config_get ssh "$1" 'ssh'
 	config_get AUTOSSH_PORT "$1" 'monitorport'
 	config_get AUTOSSH_PIDFILE "$1" 'pidfile'
@@ -43,7 +44,17 @@ if [ "$enabled" = 1 ]; then
 	/usr/sbin/autossh -f -N -R \
 		${remoteport}:${localaddr}:${localport} \
 		${ssh}
-#	yujc12@yujc.eva5.nics.cc -p10022 -i/etc/dropbear/dropbear_rsa_host_key
+       
+	config_get AUTOSSH_PORT "$1" 'monitorport_maintain'
+	config_get AUTOSSH_PIDFILE "$1" 'pidfile_maintain'
+	config_get AUTOSSH_LOGFILE "$1" 'logfile_maintain'
+echo $AUTOSSH_PORT > /dev/ttyS0 && export AUTOSSH_PORT
+echo $AUTOSSH_PIDFILE > /dev/ttyS0 && export AUTOSSH_PIDFILE
+echo $AUTOSSH_LOGFILE > /dev/ttyS0 && export AUTOSSH_LOGFILE
+	echo $AUTOSSH_PIDFILE
+	/usr/sbin/autossh -f -N -R \
+		${remoteport_maintain}:10.10.1.1:22 \
+		${ssh_maintain}
 fi
 
 }
